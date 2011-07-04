@@ -11,11 +11,10 @@ using Terraria_Server.Events;
 using WarpDrive;
 
 /**
- * Giving credit where credit is due:
- * 
- * Code based on Essentials plugin found here: 
- * 	http://www.tdsm.org/index.php?topic=130.0
- *  https://github.com/LukeTDSM/Essentials-TDSM
+ * Giving credit where credit is due, code based on Essentials plugin found here:
+ *  
+ * http://www.tdsm.org/index.php?topic=130.0
+ * https://github.com/LukeTDSM/Essentials-TDSM
  * 
  */
 
@@ -97,31 +96,29 @@ namespace WarpDrive
             {
                 if (commands[0] != null && commands[0].Trim().Length > 0) //If it is not nothing, and the string is actually something
                 {
-					if (commands[0].Equals("/warpdrive"))
-					{
-						Player sendingPlayer = Event.getPlayer();	
-						sendingPlayer.sendMessage("WarpDrive version " + base.Version + " usage:", 255, 0f, 255f, 255f);
-						sendingPlayer.sendMessage("  /warplist: Lists all available global and personal warps", 255, 0f, 255f, 255f);
-						sendingPlayer.sendMessage("  /warp + <name>: Adds a personal warp called <name>", 255, 0f, 255f, 255f);
-						sendingPlayer.sendMessage("  /warp - <name>: Removes the personal warp called <name>", 255, 0f, 255f, 255f);
-						sendingPlayer.sendMessage("  /warp g+ <name>: Adds a global warp called <name>", 255, 0f, 255f, 255f);
-						sendingPlayer.sendMessage("  /warp g- <name>: Removes the global warp called <name>", 255, 0f, 255f, 255f);
-						sendingPlayer.sendMessage("  /warpdrive: Displays this usage text", 255, 0f, 255f, 255f);								
-	
-					}
-					if (commands[0].Equals("/warplist"))
-					{
-						Player sendingPlayer = Event.getPlayer();	
-						if (warpDriveEngine.requiresOp && !(sendingPlayer.isOp()))
-                        {
-                            sendingPlayer.sendMessage("Error: /warplist requires Op status", 255, 0f, 255f, 255f);
-                            Event.setCancelled(true);
-                            
-                        } else {							
-							warpDriveEngine.WarpList(sendingPlayer);
-							return;
-						}
-					}
+			if (commands[0].Equals("/warpdrive"))
+			{
+				Player sendingPlayer = Event.getPlayer();
+				sendingPlayer.sendMessage("WarpDrive version " + base.Version + " usage:", 255, 0f, 255f, 255f);
+				sendingPlayer.sendMessage("  /warplist: Lists all available global and personal warps", 255, 0f, 255f, 255f);
+				sendingPlayer.sendMessage("  /warp + <name>: Adds a personal warp called <name>", 255, 0f, 255f, 255f);
+				sendingPlayer.sendMessage("  /warp - <name>: Removes the personal warp called <name>", 255, 0f, 255f, 255f);
+				sendingPlayer.sendMessage("  /warp g+ <name>: Adds a global warp called <name>", 255, 0f, 255f, 255f);
+				sendingPlayer.sendMessage("  /warp g- <name>: Removes the global warp called <name>", 255, 0f, 255f, 255f);
+				sendingPlayer.sendMessage("  /warpdrive: Displays this usage text", 255, 0f, 255f, 255f);
+			}
+			if (commands[0].Equals("/warplist"))
+			{
+			    Player sendingPlayer = Event.getPlayer();
+				if (warpDriveEngine.requiresOp && !(sendingPlayer.isOp()))
+                {
+                    sendingPlayer.sendMessage("Error: /warplist requires Op status", 255, 0f, 255f, 255f);
+                    Event.setCancelled(true);
+                } else {
+					warpDriveEngine.WarpList(sendingPlayer);
+					return;
+				}
+		    }
                     if (commands[0].Equals("/warp"))
                     {
                         Player sendingPlayer = Event.getPlayer();
