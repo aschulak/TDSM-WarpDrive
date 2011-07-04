@@ -1,18 +1,19 @@
 ﻿<Properties>
   <MonoDevelop.Ide.Workspace ActiveConfiguration="Release" />
-  <MonoDevelop.Ide.Workbench ActiveDocument="..\DeathCradle-Terraria-s-Dedicated-Server-Mod-ef9b619\Terraria_Server\Player.cs">
+  <MonoDevelop.Ide.Workbench ActiveDocument="TDSM-WarpDrive\WarpDrivePlugin.cs">
     <Files>
-      <File FileName="README" Line="5" Column="7" />
       <File FileName="..\DeathCradle-Terraria-s-Dedicated-Server-Mod-ef9b619\Terraria_Server\Server\ServerProperties.cs" Line="42" Column="9" />
       <File FileName="..\DeathCradle-Terraria-s-Dedicated-Server-Mod-ef9b619\Terraria_Server\Misc\PropertiesFile.cs" Line="16" Column="53" />
-      <File FileName="TDSM-WarpDrive\WarpDrivePlugin.cs" Line="128" Column="51" />
+      <File FileName="..\DeathCradle-Terraria-s-Dedicated-Server-Mod-ef9b619\Terraria_Server\Player.cs" Line="5056" Column="48" />
+      <File FileName="TDSM-WarpDrive\WarpDrivePlugin.cs" Line="130" Column="14" />
       <File FileName="TDSM-WarpDrive\WarpDriveEngine.cs" Line="1" Column="1" />
+      <File FileName="..\DeathCradle-Terraria-s-Dedicated-Server-Mod-ef9b619\Terraria_Server\Commands\CommandParser.cs" Line="82" Column="40" />
+      <File FileName="README" Line="5" Column="7" />
       <File FileName="TDSM-WarpDrive\Warp.cs" Line="1" Column="1" />
       <File FileName="TDSM-WarpDrive\Properties.cs" Line="1" Column="1" />
-      <File FileName="TDSM-WarpDrive\AssemblyInfo.cs" Line="1" Column="1" />
+      <File FileName="TDSM-WarpDrive\AssemblyInfo.cs" Line="20" Column="34" />
       <File FileName="TDSM-WarpDrive\PropertiesFile.cs" Line="1" Column="1" />
       <File FileName="..\DeathCradle-Terraria-s-Dedicated-Server-Mod-ef9b619\TDSMPlugin\TDSMPlugin\TDSMPlugin.cs" Line="130" Column="1" />
-      <File FileName="..\DeathCradle-Terraria-s-Dedicated-Server-Mod-ef9b619\Terraria_Server\Player.cs" Line="5056" Column="48" />
     </Files>
   </MonoDevelop.Ide.Workbench>
   <MonoDevelop.Ide.DebuggingService.Breakpoints>
