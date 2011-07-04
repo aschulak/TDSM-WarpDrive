@@ -15,13 +15,20 @@ Global
 		{5006EE5C-C259-4155-BA77-F8CBDED8105A}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(MonoDevelopProperties) = preSolution
-		StartupItem = TDSM-Warp\TDSM-WarpDrive.csproj
+		StartupItem = TDSM-WarpDrive\TDSM-WarpDrive.csproj
 		Policies = $0
 		$0.StandardHeader = $1
 		$1.Text = 
 		$1.IncludeInNewFiles = True
 		$0.VersionControlPolicy = $2
 		$2.inheritsSet = Mono
+		$0.TextStylePolicy = $3
+		$3.inheritsSet = null
+		$3.scope = text/x-csharp
+		$0.CSharpFormattingPolicy = $4
+		$4.inheritsSet = Mono
+		$4.inheritsScope = text/x-csharp
+		$4.scope = text/x-csharp
 		version = 1.0
 	EndGlobalSection
 EndGlobal
