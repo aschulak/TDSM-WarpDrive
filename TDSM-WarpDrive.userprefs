@@ -3,9 +3,10 @@
   <MonoDevelop.Ide.Workbench ActiveDocument="TDSM-WarpDrive\WarpDrivePlugin.cs">
     <Files>
       <File FileName="TDSM-WarpDrive\WarpDriveEngine.cs" Line="33" Column="26" />
-      <File FileName="TDSM-WarpDrive\WarpDrivePlugin.cs" Line="97" Column="13" />
+      <File FileName="TDSM-WarpDrive\WarpDrivePlugin.cs" Line="73" Column="13" />
       <File FileName="TDSM-WarpDrive\Warp.cs" Line="6" Column="2" />
       <File FileName="TDSM-WarpDrive\Properties.cs" Line="1" Column="1" />
+      <File FileName="TDSM-WarpDrive\AssemblyInfo.cs" Line="20" Column="35" />
     </Files>
   </MonoDevelop.Ide.Workbench>
   <MonoDevelop.Ide.DebuggingService.Breakpoints>

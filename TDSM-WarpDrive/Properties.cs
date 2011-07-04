@@ -8,51 +8,45 @@ namespace WarpDrive
 {
     public class Properties : PropertiesFile
     {
-        public Properties(String pFile)
+        public Properties (String pFile)
         {
-            base.setFile(pFile, true);
+            base.setFile (pFile, true);
         }
 
-        public void pushData()
+        public void pushData ()
         {
-            setWarpEnabled(isWarpEnabled());
-            setRequiresOp(warpRequiresOp());
+            setWarpEnabled (isWarpEnabled ());
+            setRequiresOp (warpRequiresOp ());
         }
 
-        public bool isWarpEnabled()
+        public bool isWarpEnabled ()
         {
-            string WarpEnabled = base.getValue("warpEnabled");
-            if (WarpEnabled == null || WarpEnabled.Trim().Length < 0)
-            {
+            string WarpEnabled = base.getValue ("warpEnabled");
+            if (WarpEnabled == null || WarpEnabled.Trim ().Length < 0) {
                 return true;
-            }
-            else
-            {
-                return Boolean.Parse(WarpEnabled);
+            } else {
+                return Boolean.Parse (WarpEnabled);
             }
         }
 
-        public void setWarpEnabled(bool WarpEnabled)
+        public void setWarpEnabled (bool WarpEnabled)
         {
-            base.setValue("warpEnabled", WarpEnabled.ToString());
+            base.setValue ("warpEnabled", WarpEnabled.ToString ());
         }
 
-        public bool warpRequiresOp()
+        public bool warpRequiresOp ()
         {
-            string requiresOp = base.getValue("warpRequiresOp");
-            if (requiresOp == null || requiresOp.Trim().Length < 0)
-            {
+            string requiresOp = base.getValue ("warpRequiresOp");
+            if (requiresOp == null || requiresOp.Trim ().Length < 0) {
                 return true;
-            }
-            else
-            {
-                return Boolean.Parse(requiresOp);
+            } else {
+                return Boolean.Parse (requiresOp);
             }
         }
 
-        public void setRequiresOp(bool OpRequired)
+        public void setRequiresOp (bool OpRequired)
         {
-            base.setValue("warpRequiresOp", OpRequired.ToString());
+            base.setValue ("warpRequiresOp", OpRequired.ToString ());
         }
     }
 }
