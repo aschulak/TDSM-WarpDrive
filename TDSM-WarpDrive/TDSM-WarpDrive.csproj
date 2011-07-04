@@ -53,6 +53,7 @@
     <Compile Include="WarpDrivePlugin.cs" />
     <Compile Include="WarpDriveEngine.cs" />
     <Compile Include="Warp.cs" />
+    <Compile Include="PropertiesFile.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ProjectExtensions>

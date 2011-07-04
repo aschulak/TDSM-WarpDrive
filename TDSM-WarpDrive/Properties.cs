@@ -2,17 +2,13 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using Terraria_Server;
 
 namespace WarpDrive
 {
 	public class Properties : PropertiesFile
 	{
-		public Properties(String pFile)
-		{
-			base.setFile(pFile, true);
-		}
-
+		public Properties(String propertiesPath) : base(propertiesPath) { }
+		
 		public void pushData()
 		{			
 			setRequiresOp(requiresOp());
@@ -30,7 +26,7 @@ namespace WarpDrive
 
 		public void setRequiresOp(bool OpRequired)
 		{
-			base.setValue("requiresOp", OpRequired.ToString());
+			base.setValue("requiresOp", OpRequired.ToString());				
 		}
 	}
 }
