@@ -1,0 +1,15 @@
+﻿<Properties>
+  <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" />
+  <MonoDevelop.Ide.Workbench ActiveDocument="TDSM-WarpDrive\AssemblyInfo.cs">
+    <Files>
+      <File FileName="TDSM-WarpDrive\WarpDriveEngine.cs" Line="66" Column="32" />
+      <File FileName="TDSM-WarpDrive\WarpDrivePlugin.cs" Line="40" Column="48" />
+      <File FileName="TDSM-WarpDrive\AssemblyInfo.cs" Line="1" Column="1" />
+    </Files>
+  </MonoDevelop.Ide.Workbench>
+  <MonoDevelop.Ide.DebuggingService.Breakpoints>
+    <BreakpointStore />
+  </MonoDevelop.Ide.DebuggingService.Breakpoints>
+  <MonoDevelop.Ide.DebuggingService.PinnedWatches />
+  <AuthorInfo Name="Envoy" Email="aschulak@gmail.com" Copyright="Envoy" Company="" Trademark="" />
+</Properties>
