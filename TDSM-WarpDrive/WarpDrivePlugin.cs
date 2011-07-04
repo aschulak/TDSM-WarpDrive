@@ -36,13 +36,14 @@ namespace WarpDrive
 		public WarpDriveEngine warpDriveEngine;
 		public bool isEnabled = false;
 		public bool requiresOp = true;
+        public bool globalOwnershipEnforced = true;
      
 		public override void Load()
 		{
 			Name = "WarpDrive";
 			Description = "Warp commands for TDSM";
 			Author = "Envoy"; // see credits above, most of this is borrowed
-			Version = "1.0.1";
+			Version = "1.1.0";
 			TDSMBuild = 19;
          
 			Log("version " + base.Version + " Loading...");
@@ -56,12 +57,17 @@ namespace WarpDrive
 			properties.Load();
 			properties.pushData(); //Creates default values if needed.
 			properties.Save();
-            
+
+            //read properties data
+            requiresOp = properties.requiresOp();
+            globalOwnershipEnforced = properties.globalOwnershipEnforced();
+
+            // spit out useful property info
+            Log("Requires Ops: " + requiresOp);
+            Log("Global Ownership Enforced: " + globalOwnershipEnforced);
+
 			//setup new WarpDriveEngine        
 			warpDriveEngine = new WarpDriveEngine(this, pluginFolder + Path.DirectorySeparatorChar + "warps.xml");
-
-			//read properties data			
-			requiresOp = properties.requiresOp();
 
 			isEnabled = true;
 		}
