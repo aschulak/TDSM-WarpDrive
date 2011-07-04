@@ -31,8 +31,6 @@ namespace WarpDrive
          * As of June 16, 1:15 AM, TDSM should now load Plugins Dynamically.
          */
 
-        // tConsole is used for when logging Output to the console & a log file.
-
         public Properties properties;
 		public WarpDriveEngine warpDriveEngine;
         public bool isEnabled = false;
@@ -96,29 +94,29 @@ namespace WarpDrive
             {
                 if (commands[0] != null && commands[0].Trim().Length > 0) //If it is not nothing, and the string is actually something
                 {
-			if (commands[0].Equals("/warpdrive"))
-			{
-				Player sendingPlayer = Event.getPlayer();
-				sendingPlayer.sendMessage("WarpDrive version " + base.Version + " usage:", 255, 0f, 255f, 255f);
-				sendingPlayer.sendMessage("  /warplist: Lists all available global and personal warps", 255, 0f, 255f, 255f);
-				sendingPlayer.sendMessage("  /warp + <name>: Adds a personal warp called <name>", 255, 0f, 255f, 255f);
-				sendingPlayer.sendMessage("  /warp - <name>: Removes the personal warp called <name>", 255, 0f, 255f, 255f);
-				sendingPlayer.sendMessage("  /warp g+ <name>: Adds a global warp called <name>", 255, 0f, 255f, 255f);
-				sendingPlayer.sendMessage("  /warp g- <name>: Removes the global warp called <name>", 255, 0f, 255f, 255f);
-				sendingPlayer.sendMessage("  /warpdrive: Displays this usage text", 255, 0f, 255f, 255f);
-			}
-			if (commands[0].Equals("/warplist"))
-			{
-			    Player sendingPlayer = Event.getPlayer();
-				if (warpDriveEngine.requiresOp && !(sendingPlayer.isOp()))
-                {
-                    sendingPlayer.sendMessage("Error: /warplist requires Op status", 255, 0f, 255f, 255f);
-                    Event.setCancelled(true);
-                } else {
-					warpDriveEngine.WarpList(sendingPlayer);
-					return;
-				}
-		    }
+        			if (commands[0].Equals("/warpdrive"))
+        			{
+        				Player sendingPlayer = Event.getPlayer();
+        				sendingPlayer.sendMessage("WarpDrive version " + base.Version + " usage:", 255, 0f, 255f, 255f);
+        				sendingPlayer.sendMessage("  /warplist: Lists all available global and personal warps", 255, 0f, 255f, 255f);
+        				sendingPlayer.sendMessage("  /warp + <name>: Adds a personal warp called <name>", 255, 0f, 255f, 255f);
+        				sendingPlayer.sendMessage("  /warp - <name>: Removes the personal warp called <name>", 255, 0f, 255f, 255f);
+        				sendingPlayer.sendMessage("  /warp g+ <name>: Adds a global warp called <name>", 255, 0f, 255f, 255f);
+        				sendingPlayer.sendMessage("  /warp g- <name>: Removes the global warp called <name>", 255, 0f, 255f, 255f);
+        				sendingPlayer.sendMessage("  /warpdrive: Displays this usage text", 255, 0f, 255f, 255f);
+        			}
+        			if (commands[0].Equals("/warplist"))
+        			{
+        			    Player sendingPlayer = Event.getPlayer();
+        				if (warpDriveEngine.requiresOp && !(sendingPlayer.isOp()))
+                        {
+                            sendingPlayer.sendMessage("Error: /warplist requires Op status", 255, 0f, 255f, 255f);
+                            Event.setCancelled(true);
+                        } else {
+        					warpDriveEngine.WarpList(sendingPlayer);
+        					return;
+        				}
+        		    }
                     if (commands[0].Equals("/warp"))
                     {
                         Player sendingPlayer = Event.getPlayer();
@@ -143,7 +141,7 @@ namespace WarpDrive
                                     warpDriveEngine.WriteWarp(sendingPlayer, commands[2], false);
                                 }
                             }
-							else if (commands[1].Equals("g+"))
+        					else if (commands[1].Equals("g+"))
                             {
                                 if (commands.Length < 3)
                                     sendingPlayer.sendMessage("Add warp error: format must be /warp + <warpname>", 255, 0f, 255f, 255f);
@@ -161,7 +159,7 @@ namespace WarpDrive
                                     warpDriveEngine.DelWarp(sendingPlayer, commands[2], false);
                                 }
                             }
-							else if (commands[1].Equals("g-"))
+        					else if (commands[1].Equals("g-"))
                             {
                                 if (commands.Length < 3)
                                     sendingPlayer.sendMessage("Remove warp error: format must be /warp - <warpname>", 255, 0f, 255f, 255f);
@@ -180,9 +178,9 @@ namespace WarpDrive
                             sendingPlayer.sendMessage("Error: Warp not enabled", 255, 0f, 255f, 255f);
                         }
                         Event.setCancelled(true);
-                    }                    
+                    }
                 }
             }
-        }            
+        }
     }
 }
