@@ -14,29 +14,13 @@ namespace WarpDrive
 		}
 
 		public void pushData()
-		{
-			setWarpEnabled(isWarpEnabled());
-			setRequiresOp(warpRequiresOp());
+		{			
+			setRequiresOp(requiresOp());
 		}
 
-		public bool isWarpEnabled()
+		public bool requiresOp()
 		{
-			string WarpEnabled = base.getValue("warpEnabled");
-			if (WarpEnabled == null || WarpEnabled.Trim().Length < 0) {
-				return true;
-			} else {
-				return Boolean.Parse(WarpEnabled);
-			}
-		}
-
-		public void setWarpEnabled(bool WarpEnabled)
-		{
-			base.setValue("warpEnabled", WarpEnabled.ToString());
-		}
-
-		public bool warpRequiresOp()
-		{
-			string requiresOp = base.getValue("warpRequiresOp");
+			string requiresOp = base.getValue("requiresOp");
 			if (requiresOp == null || requiresOp.Trim().Length < 0) {
 				return true;
 			} else {
@@ -46,7 +30,7 @@ namespace WarpDrive
 
 		public void setRequiresOp(bool OpRequired)
 		{
-			base.setValue("warpRequiresOp", OpRequired.ToString());
+			base.setValue("requiresOp", OpRequired.ToString());
 		}
 	}
 }

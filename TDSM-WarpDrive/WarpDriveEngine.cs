@@ -13,8 +13,7 @@ namespace WarpDrive
 	public class WarpDriveEngine
 	{
 		private WarpDrivePlugin warpDrivePlugin;
-		public bool enabled;
-		public bool requiresOp;
+		public bool enabled;		
 		public string xmlFile;
 		public XmlDocument warpFile;
 		private XmlReader reader;
@@ -59,11 +58,9 @@ namespace WarpDrive
 					warp.loc.X = float.Parse(e.ChildNodes[2].InnerText);
 					warp.loc.Y = float.Parse(e.ChildNodes[3].InnerText);
                  
-					if (warp.owner.Length == 0) {
-						warpDrivePlugin.Log(warp.name + " is global warp");
+					if (warp.owner.Length == 0) {						
 						this.globalWarplist.Add(warp.name, warp);
-					} else {
-						warpDrivePlugin.Log(warp.name + " is personal warp");
+					} else {						
 						Dictionary<string, Warp > personalWarplist = new Dictionary<string, Warp>();
 						personalWarplistByPlayer.TryGetValue(warp.owner, out personalWarplist);
 						if (personalWarplist == null) {
@@ -145,6 +142,7 @@ namespace WarpDrive
 		public void WriteWarp(Player player, string warpName, bool isGlobal)
 		{
 			if (!WarpAlreadyExists(player, warpName, isGlobal)) {
+				// create Warp
 				Warp warp = new Warp();
 				warp.name = warpName;
 				warp.loc.X = player.getLocation().X;
@@ -153,8 +151,9 @@ namespace WarpDrive
 				if (!isGlobal) {                 
 					warp.owner = player.getName();
 				}
-				string warpXml = warp.ToXml();
-             
+				
+				// write warp to disk
+				string warpXml = warp.ToXml();             
 				navi.MoveToRoot();
 				navi.MoveToFirstChild();                
 				navi.AppendChild(warpXml);
@@ -224,10 +223,10 @@ namespace WarpDrive
       */      
 		public void PersonalWarpList(Player player)
 		{            
+			player.sendMessage("Available personal warps:", 255, 0f, 255f, 255f);
 			Dictionary<string, Warp > personalWarplist = new Dictionary<string, Warp>();
 			personalWarplistByPlayer.TryGetValue(player.getName(), out personalWarplist);
-			if (personalWarplist != null) {
-				player.sendMessage("Available personal warps:", 255, 0f, 255f, 255f);
+			if (personalWarplist != null) {		
 				foreach (KeyValuePair<string, Warp> pair in personalWarplist) {
 					player.sendMessage("  " + pair.Key, 255, 0f, 255f, 255f);               
 				}
