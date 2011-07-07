@@ -95,7 +95,7 @@ namespace WarpDrive
 
                 // only allow if they own the warp
                 if (globalOwnershipEnforced && warp.owner != player.Name) {
-                    player.sendMessage("Error: Cannot delete warp you do not own.", 255, 0f, 255f, 255f);
+                    player.sendMessage("Error: Cannot delete warp you do not own.", 255, 255f, 0f, 0f);
                     warpDrivePlugin.Log(player.Name + " attempted to remove warp <" + warpName + "> unsuccessfully.");
                     return;
                 }
@@ -114,7 +114,7 @@ namespace WarpDrive
                 player.sendMessage("Warp " + warpName + " removed.", 255, 0f, 255f, 255f);
                 warpDrivePlugin.Log(player.getName() + " removed warp " + warpName);
             } else {             
-                player.sendMessage("Error: Warp " + warpName + " does not exist.", 255, 0f, 255f, 255f);
+                player.sendMessage("Error: Warp <" + warpName + "< does not exist.", 255, 255f, 0f, 0f);
             }
         }
      
@@ -123,7 +123,7 @@ namespace WarpDrive
         {
             player.teleportTo(warp.loc.X, warp.loc.Y);
             player.sendMessage("Warped to " + warp.type + " warp <" + warp.name + ">.", 255, 0f, 255f, 255f);
-            warpDrivePlugin.Log(player.getName() + " used /warp " + warp.name);
+            warpDrivePlugin.Log("Warped [" + player.getName() + "] to <" + warp.name + ">");
         }
      
         public void Warp(Player player, string warpName)
@@ -147,7 +147,7 @@ namespace WarpDrive
             if (warp != null) {
                 WarpPlayerTo(player, warp); 
             } else {
-                player.sendMessage("Error: warp <" + warpName + "> does not exist.", 255, 0f, 255f, 255f);
+                player.sendMessage("Error: warp <" + warpName + "> does not exist.", 255, 255f, 0f, 0f);
             }
              
         }
@@ -179,7 +179,7 @@ namespace WarpDrive
                 if (isGlobal) {
                     globalWarplist.Add(warpName, warp);
                     player.sendMessage("Global warp <" + warpName + "> created.", 255, 0f, 255f, 255f);
-                    warpDrivePlugin.Log(player.getName() + " created global warp " + warpName + " at " + warp.loc.X + "," + warp.loc.Y);
+                    warpDrivePlugin.Log(player.getName() + " created global warp <" + warpName + "> at " + warp.loc.X + "," + warp.loc.Y);
                 } else {
                     Dictionary<string, Warp > personalWarplist = new Dictionary<string, Warp>();
                     personalWarplistByPlayer.TryGetValue(warp.owner, out personalWarplist);
@@ -189,10 +189,10 @@ namespace WarpDrive
                     }
                     personalWarplist.Add(warp.name, warp);
                     player.sendMessage("Personal warp <" + warpName + "> created.", 255, 0f, 255f, 255f);
-                    warpDrivePlugin.Log(player.getName() + " created personal warp " + warpName + " at " + warp.loc.X + "," + warp.loc.Y);
+                    warpDrivePlugin.Log(player.getName() + " created personal warp <" + warpName + "> at " + warp.loc.X + "," + warp.loc.Y);
                 }                                               
             } else {
-                player.sendMessage("Error: Warp " + warpName + " already exists.", 255, 0f, 255f, 255f);
+                player.sendMessage("Error: Warp <" + warpName + "> already exists.", 255, 255f, 0f, 0f);
             }
         }
      
