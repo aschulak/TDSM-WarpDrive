@@ -43,7 +43,7 @@ namespace WarpDrive
             Name = "WarpDrive";
             Description = "Warp commands for TDSM";
             Author = "Envoy"; // see credits above, most of this is borrowed
-            Version = "1.3.24";
+            Version = "1.2.24";
             TDSMBuild = 24;
          
             Log("version " + base.Version + " Loading...");
@@ -88,7 +88,7 @@ namespace WarpDrive
         {
             Log("Enabled");
             this.registerHook(Hooks.PLAYER_COMMAND);
-            this.registerHook(Hooks.PLAYER_DEATH);
+            //this.registerHook(Hooks.PLAYER_DEATH);
         }
 
         public override void Disable()
