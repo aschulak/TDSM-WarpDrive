@@ -43,8 +43,8 @@ namespace WarpDrive
             Name = "WarpDrive";
             Description = "Warp commands for TDSM";
             Author = "Envoy"; // see credits above, most of this is borrowed
-            Version = "1.2.22";
-            TDSMBuild = 22;
+            Version = "1.3.24";
+            TDSMBuild = 24;
          
             Log("version " + base.Version + " Loading...");
          
@@ -87,13 +87,21 @@ namespace WarpDrive
         public override void Enable()
         {
             Log("Enabled");
-            this.registerHook(Hooks.PLAYER_COMMAND);            
+            this.registerHook(Hooks.PLAYER_COMMAND);
+            this.registerHook(Hooks.PLAYER_DEATH);
         }
 
         public override void Disable()
         {
             Log("Disabled");
             isEnabled = false;
+        }
+
+        public override void onPlayerDeath(PlayerDeathEvent Event)
+        {
+            warpDriveEngine.Warp(Event.Player, "home");
+            //Event.Cancelled = true;
+            return;
         }
 
         public override void onPlayerCommand(PlayerCommandEvent Event)

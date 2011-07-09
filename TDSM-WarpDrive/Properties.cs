@@ -5,8 +5,11 @@ using System.Text;
 
 namespace WarpDrive
 {
-    public class Properties : PropertiesFile
+  	
+	public class Properties : PropertiesFile
     {
+		
+		
         public Properties(String propertiesPath) : base(propertiesPath)
         {
         }
