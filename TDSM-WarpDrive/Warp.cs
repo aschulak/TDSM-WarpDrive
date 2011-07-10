@@ -1,9 +1,10 @@
 using System;
 using Terraria_Server.Misc;
 
-namespace WarpDrive
+namespace Envoy.TDSM_WarpDrive
 {
-    public static class WarpType {
+    public static class WarpType
+    {
         public const string GLOBAL = "global";
         public const string PERSONAL = "personal";
     }
@@ -35,6 +36,18 @@ namespace WarpDrive
             warpXml += "</warp>";
             return warpXml;
         }
+
+        public override bool Equals(Object other)
+        {
+            Warp otherWarp = (Warp)other;
+            return (name.Equals(otherWarp.name) && owner.Equals(otherWarp.owner) && type.Equals(otherWarp.type));
+        }
+     
+        public override int GetHashCode()
+        {
+            return name.GetHashCode() ^ owner.GetHashCode() ^ type.GetHashCode();
+        }
+
     }
 
 }

@@ -1,18 +1,14 @@
 ﻿<Properties>
   <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" />
-  <MonoDevelop.Ide.Workbench ActiveDocument="TDSM-WarpDrive\PropertiesFile.cs">
+  <MonoDevelop.Ide.Workbench ActiveDocument="TDSM-WarpDrive\WarpDriveEngine.cs">
     <Files>
-      <File FileName="TDSM-WarpDrive\WarpDrivePlugin.cs" Line="2" Column="1" />
+      <File FileName="TDSM-WarpDrive\WarpDrivePlugin.cs" Line="45" Column="27" />
       <File FileName="TDSM-WarpDrive\Properties.cs" Line="1" Column="1" />
-      <File FileName="..\DeathCradle-Terraria-s-Dedicated-Server-Mod-dcfa028\Terraria_Server\Misc\PropertiesFile.cs" Line="1" Column="1" />
-      <File FileName="..\DeathCradle-Terraria-s-Dedicated-Server-Mod-dcfa028\Terraria_Server\Plugin\Hooks.cs" Line="17" Column="21" />
-      <File FileName="..\DeathCradle-Terraria-s-Dedicated-Server-Mod-dcfa028\Terraria_Server\Events\PlayerDeathEvent.cs" Line="1" Column="1" />
-      <File FileName="..\DeathCradle-Terraria-s-Dedicated-Server-Mod-dcfa028\Terraria_Server\Events\BasePlayerEvent.cs" Line="1" Column="1" />
-      <File FileName="..\DeathCradle-Terraria-s-Dedicated-Server-Mod-dcfa028\Terraria_Server\Player.cs" Line="5042" Column="1" />
-      <File FileName="TDSM-WarpDrive\WarpDriveEngine.cs" Line="1" Column="1" />
+      <File FileName="TDSM-WarpDrive\WarpDriveEngine.cs" Line="311" Column="71" />
       <File FileName="TDSM-WarpDrive\Warp.cs" Line="1" Column="1" />
       <File FileName="TDSM-WarpDrive\AssemblyInfo.cs" Line="1" Column="1" />
-      <File FileName="TDSM-WarpDrive\PropertiesFile.cs" Line="126" Column="1" />
+      <File FileName="TDSM-WarpDrive\PropertiesFile.cs" Line="1" Column="1" />
+      <File FileName="..\TDSM-Passport\TDSM-Passport\Passport.cs" Line="1" Column="1" />
     </Files>
   </MonoDevelop.Ide.Workbench>
   <MonoDevelop.Ide.DebuggingService.Breakpoints>

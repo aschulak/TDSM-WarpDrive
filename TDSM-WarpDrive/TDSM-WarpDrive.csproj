@@ -7,7 +7,7 @@
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>{5006EE5C-C259-4155-BA77-F8CBDED8105A}</ProjectGuid>
     <OutputType>Library</OutputType>
-    <RootNamespace>WarpDrive</RootNamespace>
+    <RootNamespace>Envoy.WarpDrive</RootNamespace>
     <AssemblyName>WarpDrive</AssemblyName>
     <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
     <ReleaseVersion>1.0</ReleaseVersion>
@@ -45,6 +45,10 @@
     <Reference Include="System.Data.Linq">
     </Reference>
     <Reference Include="System.Data.DataSetExtensions">
+    </Reference>
+    <Reference Include="Passport, Version=1.1.24.32567, Culture=neutral, PublicKeyToken=null">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\TDSM-Passport\TDSM-Passport\bin\Debug\Passport.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>

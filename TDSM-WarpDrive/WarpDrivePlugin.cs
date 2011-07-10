@@ -9,7 +9,6 @@ using Terraria_Server;
 using Terraria_Server.Commands;
 using Terraria_Server.Events;
 using Terraria_Server.Misc;
-using WarpDrive;
 
 /**
  * Based on core functionality developed in the Essentials plugin.
@@ -19,7 +18,7 @@ using WarpDrive;
  * -Envoy
  */
 
-namespace WarpDrive
+namespace Envoy.TDSM_WarpDrive
 {
     public class WarpDrivePlugin : Plugin
     {
@@ -43,7 +42,7 @@ namespace WarpDrive
             Name = "WarpDrive";
             Description = "Warp commands for TDSM";
             Author = "Envoy"; // see credits above, most of this is borrowed
-            Version = "1.2.24";
+            Version = "1.3.24";
             TDSMBuild = 24;
          
             Log("version " + base.Version + " Loading...");

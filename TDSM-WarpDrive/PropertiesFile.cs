@@ -3,7 +3,7 @@ using System.Threading;
 using System.Collections.Generic;
 using System;
 
-namespace WarpDrive
+namespace Envoy.TDSM_WarpDrive
 {
     public class PropertiesFile
     {
