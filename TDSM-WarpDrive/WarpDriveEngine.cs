@@ -3,279 +3,243 @@ using System.IO;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using System.Xml;
-using System.Xml.XPath;
 using Terraria_Server;
 using Envoy.TDSM_Passport;
- 
+using Envoy.TDSM_Vault;
+
 namespace Envoy.TDSM_WarpDrive
 {
     public class WarpDriveEngine
     {
-        private WarpDrivePlugin warpDrivePlugin;
         public bool enabled;
-        public string xmlFile;
-        public XmlDocument warpFile;
-        private XmlReader reader;
-        private XPathNavigator navi;
-        private XmlWriter writer;
-        private XmlWriterSettings wSettings;
-        private Dictionary<string, Warp> globalWarplist;
-        private Dictionary<string, Dictionary<string, Warp>> personalWarplistByPlayer;
+        private WarpDrivePlugin warpDrivePlugin;
+        private WarpList globalWarpList;
         private bool globalOwnershipEnforced;
         private PassportManager passportManager;
+        private Vault vault;
 
         public WarpDriveEngine(WarpDrivePlugin warpDrivePlugin, string xmlFile)
         {
             this.warpDrivePlugin = warpDrivePlugin;
-            this.xmlFile = xmlFile;
             this.globalOwnershipEnforced = this.warpDrivePlugin.globalOwnershipEnforced;
-            globalWarplist = new Dictionary<string, Warp>();       
-            personalWarplistByPlayer = new Dictionary<string, Dictionary<string, Warp>>();
+            globalWarpList = new WarpList();
             passportManager = PassportManagerFactory.getPassportManager();
-            SetupWarps();
-        }
-     
-        public void SetupWarps()
-        {
-            warpFile = new XmlDocument();
-            wSettings = new XmlWriterSettings();
-            wSettings.OmitXmlDeclaration = true;
-            wSettings.Indent = true;
-            int warpCount = 0;
-         
-            if (!(File.Exists(xmlFile))) {
-                FileStream file = File.Create(xmlFile);
-                file.Close();
-                warpFile.LoadXml("<warps></warps>");
-                navi = warpFile.CreateNavigator();
-                WriteXML();
-            } else {
-                reader = XmlTextReader.Create(xmlFile);
-                warpFile.Load(reader);
-                navi = warpFile.CreateNavigator();
-             
-                foreach (XmlElement e in warpFile.SelectNodes("/warps/warp")) {
-                    Warp warp = new Warp();
-                    warp.name = e.ChildNodes[0].InnerText;
-                    warp.owner = e.ChildNodes[1].InnerText;
-                    warp.type = e.ChildNodes[2].InnerText;
-                    warp.loc.X = float.Parse(e.ChildNodes[3].InnerText);
-                    warp.loc.Y = float.Parse(e.ChildNodes[4].InnerText);
-
-                    if (warp.isGlobal()) {
-                        this.globalWarplist.Add(warp.name, warp);
-                    } else {                     
-                        Dictionary<string, Warp > personalWarplist = new Dictionary<string, Warp>();
-                        personalWarplistByPlayer.TryGetValue(warp.owner, out personalWarplist);
-                        if (personalWarplist == null) {
-                            personalWarplist = new Dictionary<string, Warp>();
-                            personalWarplistByPlayer.Add(warp.owner, personalWarplist);                         
-                        }
-                        personalWarplist.Add(warp.name, warp);
-                    }
-                    warpCount++;
-                    
-                }
-                reader.Close();             
-            }
-            warpDrivePlugin.Log("Loaded " + warpCount + " warps.");
+            vault = VaultFactory.getVault();
+            loadGlobalWarps();
         }
 
-        public void DelWarp(Player player, string warpName, bool isGlobal)
-        {
-            Passport passport = passportManager.getPassport(player);
-            if (passport != null) {
-                User user = passport.getUser();
-                Dictionary<string, Warp > warplist = new Dictionary<string, Warp>();
-                if (isGlobal) {
-                    warplist = globalWarplist;   
-                } else {             
-                    personalWarplistByPlayer.TryGetValue(user.username, out warplist);
-                }
-          
-                if (warplist != null && warplist.ContainsKey(warpName)) {
-                    Warp warp = null;
-                    warplist.TryGetValue(warpName, out warp);
- 
-                    // only allow if they own the warp
-                    if (globalOwnershipEnforced && warp.owner != user.username) {
-                        player.sendMessage("Error: Cannot delete warp you do not own.", 255, 0f, 255f, 255f);
-                        warpDrivePlugin.Log(player.Name + " attempted to remove warp <" + warpName + "> unsuccessfully.");
-                        return;
-                    }
- 
-                    XmlNodeList node = warpFile.SelectNodes("/warps");
-                    for (int i = 0; i < node.Count; i++) {
-                        for (int j = 0; j < node[i].ChildNodes.Count; j++) {
-                            if (node[i].ChildNodes[j].FirstChild.InnerText == warpName) {
-                                node[i].RemoveChild(node[i].ChildNodes[j]);
-                                break;
-                            }
-                        }
-                    }
-                    WriteXML();
-                    warplist.Remove(warpName);
-                    player.sendMessage("Warp " + warpName + " removed.", 255, 0f, 255f, 255f);
-                    warpDrivePlugin.Log("<" + user.username + ">[" + player.getName() + "] removed warp " + warpName);
-                } else {             
-                    player.sendMessage("Error: Warp " + warpName + " does not exist.", 255, 0f, 255f, 255f);
-                }
-            }
-        }
-     
-        // Warps the player to the warp
-        private void WarpPlayerTo(Player player, Warp warp)
-        {
-            player.teleportTo(warp.loc.X, warp.loc.Y);
-            player.sendMessage("Warped to " + warp.type + " warp <" + warp.name + ">.", 255, 0f, 255f, 255f);
-            warpDrivePlugin.Log(player.getName() + " used /warp " + warp.name);
-        }
-     
-        public void Warp(Player player, string warpName)
+        public void warp(Player player, string warpName)
         {
             warpDrivePlugin.Log("Attempting to warp [" + player.Name + "] to <" + warpName + ">");
-             
+
             Warp warp = null;
-         
+
             // always try personal warp first
             // must be logged in to warp to personal warp
             Passport passport = passportManager.getPassport(player);
             if (passport != null) {
                 User user = passport.getUser();
-                Dictionary<string, Warp > personalWarplist = new Dictionary<string, Warp>();
-                personalWarplistByPlayer.TryGetValue(user.username, out personalWarplist);              
-                if (personalWarplist != null && personalWarplist.ContainsKey(warpName)) {                   
-                    personalWarplist.TryGetValue(warpName, out warp);                   
-                }                
+                WarpList personalWarpList = getPersonalWarpList(player);
+                if (personalWarpList != null && personalWarpList.ContainsKey(warpName)) {
+                    personalWarpList.TryGetValue(warpName, out warp);
+                }
             }
-         
+
             // if we fail to find a personal warp, look in the global warps
             if (warp == null) {
-                globalWarplist.TryGetValue(warpName, out warp);             
+                globalWarpList.TryGetValue(warpName, out warp);
             }
-         
+
             if (warp != null) {
-                WarpPlayerTo(player, warp); 
+                warpPlayerTo(player, warp);
             } else {
-                player.sendMessage("Error: warp <" + warpName + "> does not exist.", 255, 0f, 255f, 255f);
+                player.sendMessage("Error: warp <" + warpName + "> does not exist.", 255, 255f, 0f, 0f);
             }
-             
+
         }
-        
-        public void WriteWarp(Player player, string warpName, bool isGlobal)
+
+        public void setHomeWarp(Player player, bool forceOverwrite)
         {
-            if (!WarpAlreadyExists(player, warpName, isGlobal)) {
-             
-                // add warp to memory
-                if (isGlobal) {
-                    writeGlobalWarp(player, warpName);                  
-                } else {
-                    writePersonalWarp(player, warpName);
-                }                                               
-            } else {
-                player.sendMessage("Error: Warp " + warpName + " already exists.", 255, 0f, 255f, 255f);
+            if (forceOverwrite) {
+                removePersonalWarp(player, "home");
             }
+            writePersonalWarp(player, "home");
         }
-     
-        private void writePersonalWarp(Player player, string warpName)
+
+        public void writePersonalWarp(Player player, string warpName)
         {            
             Passport passport = passportManager.getPassport(player);
+
             // must be logged in to save a personal warp
-            if (passport != null) {
-                User user = passport.getUser();
-             
-                Warp warp = new Warp();
-                warp.type = WarpType.PERSONAL;
-                warp.name = warpName;
-                warp.owner = user.username; // use Account username here
-                warp.loc.X = player.getLocation().X;
-                warp.loc.Y = player.getLocation().Y;
-                addAndWriteWarpFile(warp);                              
-             
-                Dictionary<string, Warp > personalWarplist = new Dictionary<string, Warp>();
-                personalWarplistByPlayer.TryGetValue(warp.owner, out personalWarplist);
-                if (personalWarplist == null) {
-                    personalWarplist = new Dictionary<string, Warp>();
-                    personalWarplistByPlayer.Add(warp.owner, personalWarplist);
-                }
-                personalWarplist.Add(warp.name, warp);
-                player.sendMessage("Personal warp <" + warpName + "> created.", 255, 0f, 255f, 255f);
-                warpDrivePlugin.Log(player.getName() + " created personal warp " + warpName + " at " + warp.loc.X + "," + warp.loc.Y);               
-            } else {
-                player.sendMessage("Error: Must be logged in to Passport to create a personal warp.", 255, 0f, 255f, 255f);
+            if (passport == null) {
+                player.sendMessage("Error: Must be logged in to Passport to create a personal warp.", 255, 255f, 0f, 0f);
+                return;
             }
+
+            if (personalWarpExists(player, warpName)) {
+                player.sendMessage("Error: Personal warp <" + warpName + "> exists.", 255, 255f, 0f, 0f);
+                return;
+            }
+
+            User user = passport.getUser();
+            Warp warp = new Warp();
+            warp.type = WarpType.PERSONAL;
+            warp.name = warpName;
+            warp.owner = user.username; // use Account username here
+            warp.loc.X = player.getLocation().X;
+            warp.loc.Y = player.getLocation().Y;
+
+            WarpList personalWarpList = getPersonalWarpList(player);
+            try {
+                personalWarpList.Add(warp.name, warp);
+                vault.store(personalWarpList);
+            } catch (Exception e) {
+
+            }
+
+            player.sendMessage("Personal warp <" + warpName + "> created.", 255, 0f, 255f, 255f);
+            warpDrivePlugin.Log(player.getName() + " created personal warp " + warpName + " at " + warp.loc.X + "," + warp.loc.Y);
         }
-     
-        private void writeGlobalWarp(Player player, string warpName)
+
+        public void writeGlobalWarp(Player player, string warpName)
         {
             Passport passport = passportManager.getPassport(player);
+
             // must be logged in to save a personal warp
-            if (passport != null) {
-                User user = passport.getUser();
-                Warp warp = new Warp();
-                warp.type = WarpType.GLOBAL;
-                warp.name = warpName;
-                warp.owner = user.username;
-                warp.loc.X = player.getLocation().X;
-                warp.loc.Y = player.getLocation().Y;
-                addAndWriteWarpFile(warp);          
-                globalWarplist.Add(warpName, warp);
-                player.sendMessage("Global warp <" + warpName + "> created.", 255, 0f, 255f, 255f);
-                warpDrivePlugin.Log(player.getName() + " created global warp " + warpName + " at " + warp.loc.X + "," + warp.loc.Y);
-            } else {
-                player.sendMessage("Error: Must be logged in to Passport to create a global warp.", 255, 0f, 255f, 255f);
+            if (passport == null) {
+                player.sendMessage("Error: Must be logged in to Passport to create a global warp.", 255, 255f, 0f, 0f);
+                return;
             }
+
+            if (globalWarpExists(warpName)) {
+                player.sendMessage("Error: Global warp <" + warpName + "> exists.", 255, 255f, 0f, 0f);
+                return;
+            }
+
+            User user = passport.getUser();
+            Warp warp = new Warp();
+            warp.type = WarpType.GLOBAL;
+            warp.name = warpName;
+            warp.owner = user.username;
+            warp.loc.X = player.getLocation().X;
+            warp.loc.Y = player.getLocation().Y;
+
+            globalWarpList.Add(warpName, warp);
+            vault.store(globalWarpList);
+            player.sendMessage("Global warp <" + warpName + "> created.", 255, 0f, 255f, 255f);
+            warpDrivePlugin.Log(player.getName() + " created global warp " + warpName + " at " + warp.loc.X + "," + warp.loc.Y);
         }
-     
-        private void addAndWriteWarpFile(Warp warp)
+
+        public void removePersonalWarp(Player player, string warpName)
         {
-            string warpXml = warp.ToXml();             
-            navi.MoveToRoot();
-            navi.MoveToFirstChild();                
-            navi.AppendChild(warpXml);
-            WriteXML();          
+            Passport passport = passportManager.getPassport(player);
+            // must be logged in to remove a personal warp
+            if (passport == null) {
+                player.sendMessage("Error: Must be logged in to Passport to remove a personal warp.", 255, 255f, 0f, 0f);
+                return;
+            }
+
+            if (!personalWarpExists(player, warpName)) {
+                player.sendMessage("Error: Personal warp <" + warpName + "> does not exist.", 255, 255f, 0f, 0f);
+                return;
+            }
+
+            User user = passport.getUser();
+            WarpList personalWarpList = getPersonalWarpList(player);
+
+            Warp warp = null;
+            personalWarpList.TryGetValue(warpName, out warp);
+
+            // only allow if they own the warp
+            if (globalOwnershipEnforced && warp.owner != user.username) {
+                player.sendMessage("Error: Cannot delete global warp you do not own.", 255, 255f, 0f, 0f);
+                warpDrivePlugin.Log(player.Name + " attempted to remove warp <" + warpName + "> unsuccessfully.");
+                return;
+            }
+
+            personalWarpList.Remove(warpName);
+            vault.store(personalWarpList);
+            player.sendMessage("Personal warp <" + warpName + "> removed.", 255, 0f, 255f, 255f);
+            warpDrivePlugin.Log("<" + user.username + ">[" + player.getName() + "] removed warp " + warpName);
         }
-     
-        public bool WarpAlreadyExists(Player player, string warpName, bool isGlobal)
+
+        public void removeGlobalWarp(Player player, string warpName)
+        {
+            Passport passport = passportManager.getPassport(player);
+            // must be logged in to remove a global warp
+            if (passport == null) {
+                player.sendMessage("Error: Must be logged in to Passport to remove a global warp.", 255, 255f, 0f, 0f);
+                return;
+            }
+
+            if (!globalWarpExists(warpName)) {
+                player.sendMessage("Error: Global warp <" + warpName + "> does not exist.", 255, 255f, 0f, 0f);
+                return;
+            }
+
+            User user = passport.getUser();
+            Warp warp = null;
+            globalWarpList.TryGetValue(warpName, out warp);
+
+            // only allow if they own the warp
+            if (globalOwnershipEnforced && !warp.owner.Equals(user.username)) {
+                player.sendMessage("Error: Cannot delete global warp you do not own.", 255, 255f, 0f, 0f);
+                warpDrivePlugin.Log(player.Name + " attempted to remove warp <" + warpName + "> unsuccessfully.");
+                return;
+            }
+
+            globalWarpList.Remove(warpName);
+            vault.store(globalWarpList);
+            player.sendMessage("Global warp <" + warpName + "> removed.", 255, 0f, 255f, 255f);
+            warpDrivePlugin.Log("<" + user.username + ">[" + player.getName() + "] removed warp " + warpName);
+        }
+
+        public bool globalWarpExists(string warpName)
+        {
+            return globalWarpList.ContainsKey(warpName);
+        }
+
+        public bool warpAlreadyExists(Player player, string warpName, bool isGlobal)
         {
             bool warpAlreadyExists = false;
          
             if (isGlobal) {
-                warpAlreadyExists = globalWarplist.ContainsKey(warpName);
+                warpAlreadyExists = globalWarpList.ContainsKey(warpName);
             } else {
-                Passport passport = passportManager.getPassport(player);
-                if (passport != null) {                    
-                    User user = passport.getUser();
-                    Dictionary<string, Warp > personalWarplist = new Dictionary<string, Warp>();
-                    personalWarplistByPlayer.TryGetValue(user.username, out personalWarplist);
-                    if (personalWarplist != null) {
-                        warpAlreadyExists = personalWarplist.ContainsKey(warpName); 
-                    }
-                } 
-            }            
+                warpAlreadyExists = personalWarpExists(player, warpName);
+            }
          
             return warpAlreadyExists;
         }
-     
-        /**
-      * Sends a list of all valid warp locations to the player
-      */      
-        public void WarpList(Player player)
+
+        public bool personalWarpExists(Player player, string warpName)
         {
-            GlobalWarpList(player);
+            bool warpAlreadyExists = false;
+            Passport passport = passportManager.getPassport(player);
+            if (passport != null) {
+                WarpList personalWarpList = getPersonalWarpList(player);
+                if (personalWarpList != null) {
+                    warpAlreadyExists = personalWarpList.ContainsKey(warpName);
+                }
+            }
+            return warpAlreadyExists;
+        }
+     
+        // Sends a list of all valid warp locations to the player
+        public void sendWarpList(Player player)
+        {
+            sendGlobalWarpList(player);
             player.sendMessage("", 255, 0f, 255f, 255f);
-            PersonalWarpList(player);           
+            sendPersonalWarpList(player);
         }
 
-        /**
-      * Sends a list of all valid global warp locations to the player
-      */      
-        public void GlobalWarpList(Player player)
+
+        // Sends a list of all valid global warp locations to the player
+        public void sendGlobalWarpList(Player player)
         {
             player.sendMessage("Available global warps:", 255, 0f, 255f, 255f);
             String warpList = "";
-            foreach (KeyValuePair<string, Warp> pair in globalWarplist) {
+            foreach (KeyValuePair<string, Warp> pair in globalWarpList.warps) {
                 warpList += pair.Key + ", ";
             }
 
@@ -287,20 +251,17 @@ namespace Envoy.TDSM_WarpDrive
             player.sendMessage(warpList, 255, 0f, 255f, 255f);
         }
      
-        /**
-      * Sends a list of all valid personal warp locations to the player
-      */      
-        public void PersonalWarpList(Player player)
+
+        // Sends a list of all valid personal warp locations to the player
+        public void sendPersonalWarpList(Player player)
         {            
             Passport passport = passportManager.getPassport(player);
             if (passport != null) {
-                User user = passport.getUser();
                 player.sendMessage("Available personal warps:", 255, 0f, 255f, 255f);
-                Dictionary<string, Warp > personalWarplist = new Dictionary<string, Warp>();
-                personalWarplistByPlayer.TryGetValue(user.username, out personalWarplist);
+                WarpList personalWarpList = getPersonalWarpList(player);
                 String warpList = "";
-                if (personalWarplist != null) {      
-                    foreach (KeyValuePair<string, Warp> pair in personalWarplist) {
+                if (personalWarpList != null) {
+                    foreach (KeyValuePair<string, Warp> pair in personalWarpList.warps) {
                         warpList += pair.Key + ", ";
                     }
                     // cut off trailing comma and whitespace
@@ -315,13 +276,41 @@ namespace Envoy.TDSM_WarpDrive
             }
         }
 
-        private void WriteXML()
+        //
+        // PRIVATE and INTERNAL
+        //
+
+        private void loadGlobalWarps()
         {
-            writer = XmlWriter.Create(xmlFile, wSettings);
-            warpFile.WriteTo(writer);
-            writer.Flush();
-            writer.Close();
+            try {
+                vault.getVaultObject(globalWarpList);
+            } catch (VaultObjectNotFoundException e) {
+
+            }
+        }
+
+        private WarpList getPersonalWarpList(Player player)
+        {
+            WarpList warpList = new WarpList();
+            try {
+                Passport passport = passportManager.getPassport(player);
+                warpList.setPassport(passport);
+                vault.getVaultObject(warpList);
+            } catch (Exception e) {
+                // noop
+            }
+
+            return warpList;
+        }
+        
+        // Warps the player to the warp
+        private void warpPlayerTo(Player player, Warp warp)
+        {
+            player.teleportTo(warp.loc.X, warp.loc.Y);
+            player.sendMessage("Warped to " + warp.type + " warp <" + warp.name + ">.", 255, 0f, 255f, 255f);
+            warpDrivePlugin.Log(player.getName() + " used /warp " + warp.name);
         }
 
     }
+    
 }

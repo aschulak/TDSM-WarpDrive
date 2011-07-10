@@ -3,3 +3,12 @@ Based on core functionality developed in the Essentials plugin.
 	https://github.com/LukeTDSM/Essentials-TDSM
 	
 -Envoy
+
+INSTALLATION:
+
+*** Only tested on Windows 32 bt systems.
+
+- Put WardDrive.dll in the Plugins folder
+- Put SQLite.Interop.dll in the same folder as Terraria_Server.exe
+- Put System.Data.SQLite.dll in the same folder as WarpDrive.dll (Plugins folder)
+- Put Vault.dll and Passport.dll in the same folder as WarpDrive.dll (Plugins folder)

@@ -9,6 +9,7 @@ using Terraria_Server;
 using Terraria_Server.Commands;
 using Terraria_Server.Events;
 using Terraria_Server.Misc;
+using Envoy.TDSM_Vault;
 
 /**
  * Based on core functionality developed in the Essentials plugin.
@@ -36,19 +37,19 @@ namespace Envoy.TDSM_WarpDrive
         public bool isEnabled = false;
         public bool requiresOp = true;
         public bool globalOwnershipEnforced = true;
+        public bool warpHomeOnDeath = true;
      
         public override void Load()
         {
             Name = "WarpDrive";
             Description = "Warp commands for TDSM";
             Author = "Envoy"; // see credits above, most of this is borrowed
-            Version = "1.3.24";
+            Version = "1.4.24";
             TDSMBuild = 24;
          
             Log("version " + base.Version + " Loading...");
          
             string pluginFolder = Statics.PluginPath + Path.DirectorySeparatorChar + Name;
-            //Create folder if it doesn't exist
             CreateDirectory(pluginFolder);
 
             //setup a new properties file
@@ -60,10 +61,12 @@ namespace Envoy.TDSM_WarpDrive
             //read properties data
             requiresOp = properties.requiresOp();
             globalOwnershipEnforced = properties.globalOwnershipEnforced();
+            warpHomeOnDeath = properties.warpHomeOnDeath();
 
             // spit out useful property info
-            Log("Requires Ops: " + requiresOp);
+            Log("Requires Op: " + requiresOp);
             Log("Global Ownership Enforced: " + globalOwnershipEnforced);
+            Log("Warp Home on Death: " + warpHomeOnDeath);
 
             //setup new WarpDriveEngine        
             warpDriveEngine = new WarpDriveEngine(this, pluginFolder + Path.DirectorySeparatorChar + "warps.xml");
@@ -87,7 +90,7 @@ namespace Envoy.TDSM_WarpDrive
         {
             Log("Enabled");
             this.registerHook(Hooks.PLAYER_COMMAND);
-            //this.registerHook(Hooks.PLAYER_DEATH);
+            this.registerHook(Hooks.PLAYER_DEATH);
         }
 
         public override void Disable()
@@ -98,9 +101,9 @@ namespace Envoy.TDSM_WarpDrive
 
         public override void onPlayerDeath(PlayerDeathEvent Event)
         {
-            warpDriveEngine.Warp(Event.Player, "home");
-            //Event.Cancelled = true;
-            return;
+            if (warpHomeOnDeath) {
+                warpDriveEngine.warp(Event.Player, "home");
+            }
         }
 
         public override void onPlayerCommand(PlayerCommandEvent Event)
@@ -126,14 +129,14 @@ namespace Envoy.TDSM_WarpDrive
 
                         sendingPlayer.sendMessage("WarpDrive version " + base.Version + " usage:", 255, 0f, 255f, 255f);
                         sendingPlayer.sendMessage("  /warplist: Lists all available global and personal warps", 255, 0f, 255f, 255f);
-                        sendingPlayer.sendMessage("  /warp + <warpname>: Adds thr personal warp named <warpname>", 255, 0f, 255f, 255f);
+                        sendingPlayer.sendMessage("  /warp + <warpname>: Adds the personal warp named <warpname>", 255, 0f, 255f, 255f);
                         sendingPlayer.sendMessage("  /warp - <warpname>: Removes the personal warp named <warpname>", 255, 0f, 255f, 255f);
                         sendingPlayer.sendMessage("  /warp g+ <warpname>: Adds thr global warp named <warpname>", 255, 0f, 255f, 255f);
                         sendingPlayer.sendMessage("  /warp g- <warpname>: Removes the global warp named <warpname>", 255, 0f, 255f, 255f);
                         sendingPlayer.sendMessage("  /warp <warpname>: Warps player to warp named <warpname>", 255, 0f, 255f, 255f);
-                        sendingPlayer.sendMessage("  /sethome: Shortcut to set a 'home' warp. Used in conjunction with /home command.", 255, 0f, 255f, 255f);
+                        sendingPlayer.sendMessage("  /sethome: Set 'home' warp.", 255, 0f, 255f, 255f);
+                        sendingPlayer.sendMessage("  /sethome!: Set 'home' warp and overwrite existing 'home' warp if it exists.", 255, 0f, 255f, 255f);
                         sendingPlayer.sendMessage("  /home: Warps player to warp point set by /sethome command.", 255, 0f, 255f, 255f);
-                        sendingPlayer.sendMessage("  /warpdrive: Displays plugin usage", 255, 0f, 255f, 255f);
 
                         Event.Cancelled = true;
                         return;
@@ -148,7 +151,7 @@ namespace Envoy.TDSM_WarpDrive
                             return;
                         }                    
                      
-                        warpDriveEngine.WarpList(sendingPlayer);
+                        warpDriveEngine.sendWarpList(sendingPlayer);
                         Event.Cancelled = true;
                         return;
                     }
@@ -161,7 +164,20 @@ namespace Envoy.TDSM_WarpDrive
                             return;
                         }
 
-                        warpDriveEngine.WriteWarp(sendingPlayer, "home", false);
+                        warpDriveEngine.setHomeWarp(sendingPlayer, false);
+                        Event.Cancelled = true;
+                        return;
+                    }
+
+                    if (commands[0].Equals("/sethome!")) {
+                        // always honor requiresOp for everything
+                        if (requiresOp && !(sendingPlayer.Op)) {
+                            sendingPlayer.sendMessage("Error: WarpDrive commands require Op status", 255, 255f, 0f, 0f);
+                            Event.Cancelled = true;
+                            return;
+                        }
+
+                        warpDriveEngine.setHomeWarp(sendingPlayer, true);
                         Event.Cancelled = true;
                         return;
                     }
@@ -174,7 +190,7 @@ namespace Envoy.TDSM_WarpDrive
                             return;
                         }
 
-                        warpDriveEngine.Warp(sendingPlayer, "home");
+                        warpDriveEngine.warp(sendingPlayer, "home");
                         Event.Cancelled = true;
                         return;
                     }
@@ -194,28 +210,28 @@ namespace Envoy.TDSM_WarpDrive
                             if (commands.Length < 3)
                                 sendingPlayer.sendMessage("Error: format must be /warp + <warpname>", 255, 255f, 0f, 0f);
                             else {
-                                warpDriveEngine.WriteWarp(sendingPlayer, commands[2], false);
+                                warpDriveEngine.writePersonalWarp(sendingPlayer, commands[2]);
                             }
                         } else if (commands[1].Equals("g+")) {
                             if (commands.Length < 3)
                                 sendingPlayer.sendMessage("Error: format must be /warp g+ <warpname>", 255, 255f, 0f, 0f);
                             else {
-                                warpDriveEngine.WriteWarp(sendingPlayer, commands[2], true);
+                                warpDriveEngine.writeGlobalWarp(sendingPlayer, commands[2]);
                             }
                         } else if (commands[1].Equals("-")) {
                             if (commands.Length < 3)
                                 sendingPlayer.sendMessage("Error: format must be /warp - <warpname>", 255, 255f, 0f, 0f);
                             else {
-                                warpDriveEngine.DelWarp(sendingPlayer, commands[2], false);
+                                warpDriveEngine.removePersonalWarp(sendingPlayer, commands[2]);
                             }
                         } else if (commands[1].Equals("g-")) {
                             if (commands.Length < 3)
                                 sendingPlayer.sendMessage("Error: format must be /warp g- <warpname>", 255, 255f, 0f, 0f);
                             else {
-                                warpDriveEngine.DelWarp(sendingPlayer, commands[2], true);
+                                warpDriveEngine.removeGlobalWarp(sendingPlayer, commands[2]);
                             }
                         } else if (commands.Length < 3) {
-                            warpDriveEngine.Warp(sendingPlayer, commands[1]);
+                            warpDriveEngine.warp(sendingPlayer, commands[1]);
                         }
                      
                         Event.Cancelled = true;

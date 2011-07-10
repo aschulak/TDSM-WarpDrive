@@ -18,6 +18,7 @@ namespace Envoy.TDSM_WarpDrive
         {
             setGlobalOwnershipEnforced(globalOwnershipEnforced());
             setRequiresOp(requiresOp());
+            setWarpHomeOnDeath(warpHomeOnDeath());
         }
 
         public bool globalOwnershipEnforced()
@@ -49,5 +50,21 @@ namespace Envoy.TDSM_WarpDrive
         {
             base.setValue("requiresOp", OpRequired.ToString());
         }
+
+       public bool warpHomeOnDeath()
+        {
+            string warpHomeOnDeath = base.getValue("warpHomeOnDeath");
+            if (warpHomeOnDeath == null || warpHomeOnDeath.Trim().Length < 0) {
+                return true;
+            } else {
+                return Boolean.Parse(warpHomeOnDeath);
+            }
+        }
+
+        public void setWarpHomeOnDeath(bool warpHomeOnDeath)
+        {
+            base.setValue("warpHomeOnDeath", warpHomeOnDeath.ToString());
+        }
+
     }
 }

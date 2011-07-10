@@ -26,17 +26,6 @@ namespace Envoy.TDSM_WarpDrive
             return type == WarpType.PERSONAL;
         }
 
-        public string ToXml()
-        {
-            string warpXml = "<warp>";
-            warpXml += "<name>" + name + "</name>";
-            warpXml += "<owner>" + owner + "</owner>";
-            warpXml += "<type>" + type + "</type>";
-            warpXml += "<x>" + loc.X + "</x><y>" + loc.Y + "</y>";
-            warpXml += "</warp>";
-            return warpXml;
-        }
-
         public override bool Equals(Object other)
         {
             Warp otherWarp = (Warp)other;
