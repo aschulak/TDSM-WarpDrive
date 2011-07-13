@@ -23,17 +23,8 @@ namespace Envoy.TDSM_WarpDrive
 {
     public class WarpDrivePlugin : Plugin
     {
-        /*
-         * @Developers
-         * 
-         * Plugins need to be in .NET 3.5
-         * Otherwise TDSM will be unable to load it. 
-         * 
-         * As of June 16, 1:15 AM, TDSM should now load Plugins Dynamically.
-         */
-
-        public Properties properties;
-        public WarpDriveEngine warpDriveEngine;
+        private Properties properties;
+        private WarpDriveEngine warpDriveEngine;
         public bool isEnabled = false;
         public bool requiresOp = true;
         public bool globalOwnershipEnforced = true;
@@ -72,13 +63,6 @@ namespace Envoy.TDSM_WarpDrive
             warpDriveEngine = new WarpDriveEngine(this, pluginFolder + Path.DirectorySeparatorChar + "warps.xml");
 
             isEnabled = true;
-        }
-
-        private static void CreateDirectory(string dirPath)
-        {
-            if (!Directory.Exists(dirPath)) {
-                Directory.CreateDirectory(dirPath);
-            }
         }
 
         public void Log(string message)
@@ -239,5 +223,17 @@ namespace Envoy.TDSM_WarpDrive
                 }
             }
         }
+
+        //
+        // PRIVATE
+        //
+
+        private static void CreateDirectory(string dirPath)
+        {
+            if (!Directory.Exists(dirPath)) {
+                Directory.CreateDirectory(dirPath);
+            }
+        }
+
     }
 }

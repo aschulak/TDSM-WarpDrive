@@ -7,7 +7,7 @@ namespace Envoy.TDSM_WarpDrive
 {
     public class WarpList : VaultObject
     {
-        public SerializableDictionary<string, Warp> warps;
+        private SerializableDictionary<string, Warp> warps;
         private XmlSerializer serializer;
 
         public WarpList() : base("WarpDrive")
@@ -39,6 +39,10 @@ namespace Envoy.TDSM_WarpDrive
         //
         // CONVENIENCE
         //
+
+        public SerializableDictionary<string, Warp> getWarps() {
+            return warps;
+        }
 
         public void Add(string warpName, Warp warp)
         {

@@ -239,7 +239,7 @@ namespace Envoy.TDSM_WarpDrive
         {
             player.sendMessage("Available global warps:", 255, 0f, 255f, 255f);
             String warpList = "";
-            foreach (KeyValuePair<string, Warp> pair in globalWarpList.warps) {
+            foreach (KeyValuePair<string, Warp> pair in globalWarpList.getWarps()) {
                 warpList += pair.Key + ", ";
             }
 
@@ -261,7 +261,7 @@ namespace Envoy.TDSM_WarpDrive
                 WarpList personalWarpList = getPersonalWarpList(player);
                 String warpList = "";
                 if (personalWarpList != null) {
-                    foreach (KeyValuePair<string, Warp> pair in personalWarpList.warps) {
+                    foreach (KeyValuePair<string, Warp> pair in personalWarpList.getWarps()) {
                         warpList += pair.Key + ", ";
                     }
                     // cut off trailing comma and whitespace
