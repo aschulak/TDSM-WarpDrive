@@ -8,8 +8,7 @@ namespace Envoy.TDSM_WarpDrive
   	
 	public class Properties : PropertiesFile
     {
-		
-		
+
         public Properties(String propertiesPath) : base(propertiesPath)
         {
         }

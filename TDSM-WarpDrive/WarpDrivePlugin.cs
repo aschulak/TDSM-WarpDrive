@@ -29,14 +29,14 @@ namespace Envoy.TDSM_WarpDrive
         public bool requiresOp = true;
         public bool globalOwnershipEnforced = true;
         public bool warpHomeOnDeath = true;
-     
+
         public override void Load()
         {
             Name = "WarpDrive";
             Description = "Warp commands for TDSM";
             Author = "Envoy"; // see credits above, most of this is borrowed
-            Version = "1.4.24";
-            TDSMBuild = 24;
+            Version = "1.4.26";
+            TDSMBuild = 26;
          
             Log("version " + base.Version + " Loading...");
          
@@ -72,15 +72,15 @@ namespace Envoy.TDSM_WarpDrive
      
         public override void Enable()
         {
-            Log("Enabled");
             this.registerHook(Hooks.PLAYER_COMMAND);
             this.registerHook(Hooks.PLAYER_DEATH);
+            Log("Enabled");
         }
 
         public override void Disable()
         {
-            Log("Disabled");
             isEnabled = false;
+            Log("Disabled");
         }
 
         public override void onPlayerDeath(PlayerDeathEvent Event)

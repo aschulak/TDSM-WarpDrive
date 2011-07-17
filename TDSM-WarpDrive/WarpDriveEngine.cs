@@ -98,7 +98,7 @@ namespace Envoy.TDSM_WarpDrive
             }
 
             player.sendMessage("Personal warp <" + warpName + "> created.", 255, 0f, 255f, 255f);
-            warpDrivePlugin.Log(player.getName() + " created personal warp " + warpName + " at " + warp.loc.X + "," + warp.loc.Y);
+            warpDrivePlugin.Log(player.Name + " created personal warp " + warpName + " at " + warp.loc.X + "," + warp.loc.Y);
         }
 
         public void writeGlobalWarp(Player player, string warpName)
@@ -127,7 +127,7 @@ namespace Envoy.TDSM_WarpDrive
             globalWarpList.Add(warpName, warp);
             vault.store(globalWarpList);
             player.sendMessage("Global warp <" + warpName + "> created.", 255, 0f, 255f, 255f);
-            warpDrivePlugin.Log(player.getName() + " created global warp " + warpName + " at " + warp.loc.X + "," + warp.loc.Y);
+            warpDrivePlugin.Log(player.Name + " created global warp " + warpName + " at " + warp.loc.X + "," + warp.loc.Y);
         }
 
         public void removePersonalWarp(Player player, string warpName)
@@ -160,7 +160,7 @@ namespace Envoy.TDSM_WarpDrive
             personalWarpList.Remove(warpName);
             vault.store(personalWarpList);
             player.sendMessage("Personal warp <" + warpName + "> removed.", 255, 0f, 255f, 255f);
-            warpDrivePlugin.Log("<" + user.username + ">[" + player.getName() + "] removed warp " + warpName);
+            warpDrivePlugin.Log("<" + user.username + ">[" + player.Name + "] removed warp " + warpName);
         }
 
         public void removeGlobalWarp(Player player, string warpName)
@@ -191,7 +191,7 @@ namespace Envoy.TDSM_WarpDrive
             globalWarpList.Remove(warpName);
             vault.store(globalWarpList);
             player.sendMessage("Global warp <" + warpName + "> removed.", 255, 0f, 255f, 255f);
-            warpDrivePlugin.Log("<" + user.username + ">[" + player.getName() + "] removed warp " + warpName);
+            warpDrivePlugin.Log("<" + user.username + ">[" + player.Name + "] removed warp " + warpName);
         }
 
         public bool globalWarpExists(string warpName)
@@ -308,7 +308,7 @@ namespace Envoy.TDSM_WarpDrive
         {
             player.teleportTo(warp.loc.X, warp.loc.Y);
             player.sendMessage("Warped to " + warp.type + " warp <" + warp.name + ">.", 255, 0f, 255f, 255f);
-            warpDrivePlugin.Log(player.getName() + " used /warp " + warp.name);
+            warpDrivePlugin.Log(player.Name + " used /warp " + warp.name);
         }
 
     }
