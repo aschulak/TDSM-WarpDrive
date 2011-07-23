@@ -35,7 +35,7 @@ namespace Envoy.TDSM_WarpDrive
             Name = "WarpDrive";
             Description = "Warp commands for TDSM";
             Author = "Envoy"; // see credits above, most of this is borrowed
-            Version = "1.4.28";
+            Version = "1.5.28";
             TDSMBuild = 28;
          
             Log("version " + base.Version + " Loading...");
@@ -127,7 +127,7 @@ namespace Envoy.TDSM_WarpDrive
                     }
                  
                     // list of warps
-                    if (commands[0].Equals("/warplist")) {
+                    if (commands[0].Equals("/warplist") || commands[0].Equals("/wl")) {
                         // always honor requiresOp for everything
                         if (requiresOp && !(sendingPlayer.Op)) {
                             sendingPlayer.sendMessage("Error: WarpDrive commands require Op status", 255, 255f, 0f, 0f);
@@ -180,7 +180,7 @@ namespace Envoy.TDSM_WarpDrive
                     }
 
                     // warp commands
-                    if (commands[0].Equals("/warp")) {   
+                    if (commands[0].Equals("/warp") || commands[0].Equals("/w")) {
                         // always honor requiresOp for everything
                         if (requiresOp && !(sendingPlayer.Op)) {
                             sendingPlayer.sendMessage("Error: WarpDrive commands require Op status", 255, 255f, 0f, 0f);
