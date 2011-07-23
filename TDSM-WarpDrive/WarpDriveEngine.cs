@@ -86,8 +86,8 @@ namespace Envoy.TDSM_WarpDrive
             warp.type = WarpType.PERSONAL;
             warp.name = warpName;
             warp.owner = user.username; // use Account username here
-            warp.loc.X = player.getLocation().X;
-            warp.loc.Y = player.getLocation().Y;
+            warp.loc.X = player.Location.X;
+            warp.loc.Y = player.Location.Y;
 
             WarpList personalWarpList = getPersonalWarpList(player);
             try {
@@ -121,8 +121,8 @@ namespace Envoy.TDSM_WarpDrive
             warp.type = WarpType.GLOBAL;
             warp.name = warpName;
             warp.owner = user.username;
-            warp.loc.X = player.getLocation().X;
-            warp.loc.Y = player.getLocation().Y;
+            warp.loc.X = player.Location.X;
+            warp.loc.Y = player.Location.Y;
 
             globalWarpList.Add(warpName, warp);
             vault.store(globalWarpList);

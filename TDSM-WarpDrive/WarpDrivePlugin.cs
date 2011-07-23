@@ -35,8 +35,8 @@ namespace Envoy.TDSM_WarpDrive
             Name = "WarpDrive";
             Description = "Warp commands for TDSM";
             Author = "Envoy"; // see credits above, most of this is borrowed
-            Version = "1.4.26";
-            TDSMBuild = 26;
+            Version = "1.4.28";
+            TDSMBuild = 28;
          
             Log("version " + base.Version + " Loading...");
          
